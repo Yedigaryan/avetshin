@@ -1,6 +1,18 @@
+Options -Indexes
+
 <IfModule mod_rewrite.c>
   RewriteEngine On
   RewriteBase /
+
+  # Document root is the git clone: never serve repo internals
+  RewriteRule ^(\.git(/|$)|\.cpanel\.yml$) - [F,L]
+
+  # Force HTTPS
+  RewriteCond %{HTTPS} !=on
+  RewriteRule ^ https://%{HTTP_HOST}%{REQUEST_URI} [L,R=301]
+</IfModule>
+
+<IfModule mod_rewrite.c>
 
   # --- Exclude internal static folders and obvious files from rewrites ---
   # Don't rewrite requests for Next static assets, images, or API routes
